@@ -1,42 +1,41 @@
 import time
 
 class User:
+
     def __init__(self, nickname, password, age):
         self.nickname = nickname
         self.password = hash(password)
         self.age = age
 
-    def __str__(self):
-        return f'{self.nickname}'
-
     def __eq__(self, other):
         return self.nickname == other.nickname
 
-    def __hash__(self):
-        return hash(self.password)
-
+    def __str__(self):
+        return f"{self.nickname}"
 
 class Video:
-    def __init__(self, title, duration, time_now = 0,
-                 adult_mode = False):
+
+    def __init__(self, title, duration, adult_mode=False):
         self.title = title
         self.duration = duration
-        self.time_now = time_now
-        self.adult_mode =adult_mode
+        self.time_now = 0
+        self.adult_mode = adult_mode
 
     def __str__(self):
         return f'{self.title}'
 
 class UrTube:
-    users = []
-    videos = []
-    current_user = None
+
+
+    def __init__(self):
+        self.users = []
+        self.videos = []
+        self.current_user = None
 
     def log_in(self, nickname, password):
         for user in self.users:
             if nickname == user.nickname and password == user.password:
                 self.current_user = user
-
     def register(self, nickname, password, age):
         for user in self.users:
             if nickname in user.nickname:
@@ -63,22 +62,23 @@ class UrTube:
         return list_video
 
     def watch_video(self, title):
-        if self.current_user and self.current_user.age < 18:
-            print('Вам нет 18 лет, пожалуйста покиньте страницу')
-        elif self.current_user:
-            for video in self.videos:
-                if title in video.title:
-                    for i in range(1, 11):
-                        print(i, end=' ')
-                        time.sleep(0.5)
-                    print('Конец видео')
-        else:
-            print('Войдите в аккаунт, чтобы смотреть видео')
+        if not self.current_user:
+            print("Войдите в аккаунт, чтобы смотреть видео")
+            return
 
-    def __str__(self):
-        return f"{self.videos}"
+        for video in self.videos:
+            if video.title == title:
+                if video.adult_mode and self.current_user.age < 18:
+                    print("Вам нет 18 лет, пожалуйста покиньте страницу")
+                    return
+
+                for i in range(1, 11):
+                    print(i, end=' ')
+                    time.sleep(0.5)
+                print("Конец видео")
 
 if __name__ == '__main__':
+
     ur = UrTube()
     v1 = Video('Лучший язык программирования 2024 года', 200)
     v2 = Video('Для чего девушкам парень программист?', 10, adult_mode=True)
